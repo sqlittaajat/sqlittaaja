@@ -8,6 +8,9 @@ readme = "README.md"
 requires-python = ">=3.8"
 dynamic = ["version"]
 
+[project.scripts]
+sqlittaaja = "sqlittaaja:main"
+
 [tool.setuptools]
 
 [tool.setuptools_scm]
