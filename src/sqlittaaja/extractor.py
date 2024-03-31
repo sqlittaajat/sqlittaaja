@@ -1,4 +1,4 @@
-import sys, getopt
+import sys, getopt, zipfile
 
 # reads command line arguments
 def readArgs():
@@ -28,6 +28,14 @@ def readArgs():
             # exercise name
             exercise = arg
 
-    print(f"Zip file name {zip}")
-    print(f"Exercise name {exercise}")
+    extract(zip)
 
+# extracts the zip file
+def extract(file):
+    filepath = "src/testfiles/"
+    try:
+        with zipfile.ZipFile(filepath + file, 'r') as zip_ref:
+            zip_ref.extractall(filepath + "extracted")
+        print(f"File {file} extracted to src/testfiles/extracted")
+    except:
+        print("Error with unzipping")
