@@ -7,7 +7,7 @@ def readArgs():
         print('-z <zipfile> -e <exercise>')
         sys.exit(2)
 
-    zipfile = ''
+    zip = ''
     exercise = ''
 
     try:
@@ -23,10 +23,11 @@ def readArgs():
             sys.exit()
         elif opt in ("-z", "--zipfile"):
             # zip name
-            zipfile = arg
+            zip = arg
         elif opt in ("-e", "--exercise"):
             # exercise name
             exercise = arg
 
-    print(f"Zip file name {zipfile}")
+    print(f"Zip file name {zip}")
     print(f"Exercise name {exercise}")
+
