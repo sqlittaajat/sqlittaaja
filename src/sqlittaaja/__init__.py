@@ -1,5 +1,5 @@
-from .extractor import extract, zipped_file, find_init_scripts, student_infos
-from .checker import init_database
+from .extractor import extract, zipped_file, find_init_scripts, student_info
+from .checker import init_database, copy_database
 import argparse
 
 
@@ -7,12 +7,42 @@ def main():
     args = read_args()
 
     with args.answers as answers:
-        base_db = init_database(find_init_scripts(extract(answers)))
-        print("\n".join(base_db.iterdump()))
+        extracted = extract(answers)
+        exercise_name = "t" + str(args.exercise) + ".sql"
+        # Try to find the exercise we are going to check.
+        if exercise_name not in extracted:
+            print(f"Exercise {args.exercise} not found")
+            return
+
+        # Get the correct answer for the exercise we are going to check.
+        correct_answer = extracted[exercise_name]
+        # Initialize the base database for everything.
+        base_db = init_database(find_init_scripts(extracted))
+
+        # Generate information for the correct answer.
+        correct_rows = base_db.execute(correct_answer).fetchall()
+        correct_dump = list(base_db.iterdump())
 
     with args.exercises as exercises:
         extracted = extract(exercises)
-        print(student_infos(extracted.keys()))
+        # Go through each student one by one.
+        for info in [(student_info(key), extracted[key])
+                     for key in extracted.keys()]:
+            student_name = info[0][0]
+            answer = info[1]
+
+            # Copy the whole database just in case.
+            db = copy_database(base_db)
+            try:
+                answer_rows = db.execute(answer).fetchall()
+                answer_dump = list(db.iterdump())
+                # Compare results between student's answer and the correct one.
+                if answer_rows == correct_rows and answer_dump == correct_dump:
+                    print(f"{student_name} +1")
+                else:
+                    raise Exception("Incorrect")
+            except Exception:
+                print(f"Incorrect answer for {student_name}")
 
 
 def read_args():
@@ -29,6 +59,7 @@ def read_args():
                         help="exercises ZIP file")
     parser.add_argument("-e", "--exercise",
                         type=int,
+                        default=1,
                         help="check a specific exercise")
 
     return parser.parse_args()

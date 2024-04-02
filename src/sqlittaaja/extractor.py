@@ -7,7 +7,10 @@ def extract(file: ZipFile) -> dict[str, str]:
     """Reads a ZIP file and returns the contents."""
 
     with file as zip:
-        return {name: zip.read(name).decode() for name in zip.namelist()}
+        return {name: zip.read(name).decode() for name in
+                # Filter out directories.
+                filter(lambda name: not name.endswith(
+                    os.path.sep), zip.namelist())}
 
 
 def zipped_file(path: str) -> ZipFile:
@@ -45,13 +48,10 @@ def find_init_scripts(contents: dict[str, str]):
     return "\n".join(contents[name] for name in all_tables)
 
 
-def student_infos(names: list[str]) -> list[(str, str)]:
-    """Extract student information from file paths."""
+def student_info(name: str) -> (str, str):
+    """Extract student information from file path."""
 
-    def get_info(name: str) -> (str, str):
-        dir = name.split(os.path.sep)[0]
-        parts = dir.split("_")
-        # First should be student's name and second some ID or something.
-        return (parts[0], parts[1])
-
-    return [get_info(name) for name in names]
+    dir = name.split(os.path.sep)[0]
+    parts = dir.split("_")
+    # First should be student's name and second some ID or something.
+    return (parts[0], parts[1])
