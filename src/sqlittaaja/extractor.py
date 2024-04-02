@@ -1,8 +1,12 @@
-import sys, getopt, zipfile, os
+import sys
+import getopt
+import zipfile
+import os
 
 
-# reads command line arguments
 def readArgs():
+    """Reads command line arguments."""
+
     argv = sys.argv[1:]
     if not argv:
         print("-z <zipfile> -e <exercise>")
@@ -33,8 +37,9 @@ def readArgs():
     print(files)
 
 
-# reads the zip file and returns the contents
 def extract(file):
+    """Reads the zip file and returns the contents."""
+
     try:
         with zipfile.ZipFile(file, "r") as zip_ref:
             return {name: zip_ref.read(name) for name in zip_ref.namelist()}
