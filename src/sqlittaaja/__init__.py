@@ -1,41 +1,29 @@
-from .extractor import extract
-import sys
-import getopt
+from .extractor import extract, zipped_file
+import argparse
 
 
 def main():
-    print("SQLittaaja")
-    read_args()
+    args = read_args()
+    with args.answers as answers:
+        print(extract(answers))
+    with args.exercises as exercises:
+        print(extract(exercises))
 
 
 def read_args():
     """Reads command line arguments."""
 
-    argv = sys.argv[1:]
-    if not argv:
-        print("-z <zipfile> -e <exercise>")
-        sys.exit(2)
+    parser = argparse.ArgumentParser(description="Check SQLite exercises",
+                                     epilog="Created by TIKO")
 
-    zip = ""
-    exercise = ""
+    parser.add_argument("answers",
+                        type=zipped_file,
+                        help="correct answers ZIP file")
+    parser.add_argument("exercises",
+                        type=zipped_file,
+                        help="exercises ZIP file")
+    parser.add_argument("-e", "--exercise",
+                        type=int,
+                        help="check a specific exercise")
 
-    try:
-        opts, args = getopt.getopt(argv, "hz:e:", ["zipfile=", "exercise="])
-    except getopt.GetoptError:
-        # error
-        print("-z <zipfile> -e <exercise>")
-        sys.exit(2)
-    for opt, arg in opts:
-        if opt == "-h":
-            # help
-            print("-z <zipfile> -e <exercise>")
-            sys.exit()
-        elif opt in ("-z", "--zipfile"):
-            # zip name
-            zip = arg
-        elif opt in ("-e", "--exercise"):
-            # exercise name
-            exercise = arg
-
-    files = extract(zip)
-    print(files)
+    return parser.parse_args()
