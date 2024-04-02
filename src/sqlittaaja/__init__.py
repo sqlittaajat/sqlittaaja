@@ -1,11 +1,11 @@
-from .extractor import extract, zipped_file
+from .extractor import extract, zipped_file, find_init_scripts
 import argparse
 
 
 def main():
     args = read_args()
     with args.answers as answers:
-        print(extract(answers))
+        print(find_init_scripts(extract(answers)))
     with args.exercises as exercises:
         print(extract(exercises))
 
