@@ -7,10 +7,12 @@ def extract(file: ZipFile) -> dict[str, str]:
     """Reads a ZIP file and returns the contents."""
 
     with file as zip:
-        return {name: zip.read(name).decode() for name in
-                # Filter out directories.
-                filter(lambda name: not name.endswith(
-                    os.path.sep), zip.namelist())}
+        return {
+            name: zip.read(name).decode()
+            for name in
+            # Filter out directories.
+            filter(lambda name: not name.endswith(os.path.sep), zip.namelist())
+        }
 
 
 def zipped_file(path: str) -> ZipFile:

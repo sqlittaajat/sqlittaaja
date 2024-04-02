@@ -26,8 +26,7 @@ def main():
     with args.exercises as exercises:
         extracted = extract(exercises)
         # Go through each student one by one.
-        for info in [(student_info(key), extracted[key])
-                     for key in extracted.keys()]:
+        for info in [(student_info(key), extracted[key]) for key in extracted.keys()]:
             student_name = info[0][0]
             answer = info[1]
 
@@ -48,18 +47,14 @@ def main():
 def read_args():
     """Reads command line arguments."""
 
-    parser = argparse.ArgumentParser(description="Check SQLite exercises",
-                                     epilog="Created by TIKO")
+    parser = argparse.ArgumentParser(
+        description="Check SQLite exercises", epilog="Created by TIKO"
+    )
 
-    parser.add_argument("answers",
-                        type=zipped_file,
-                        help="correct answers ZIP file")
-    parser.add_argument("exercises",
-                        type=zipped_file,
-                        help="exercises ZIP file")
-    parser.add_argument("-e", "--exercise",
-                        type=int,
-                        default=1,
-                        help="check a specific exercise")
+    parser.add_argument("answers", type=zipped_file, help="correct answers ZIP file")
+    parser.add_argument("exercises", type=zipped_file, help="exercises ZIP file")
+    parser.add_argument(
+        "-e", "--exercise", type=int, default=1, help="check a specific exercise"
+    )
 
     return parser.parse_args()
