@@ -16,9 +16,9 @@ def zipped_file(path: str) -> ZipFile:
     try:
         return ZipFile(path, "r")
     except FileNotFoundError:
-        raise ArgumentTypeError(f"\"{path}\" file does not exist")
+        raise ArgumentTypeError(f'"{path}" file does not exist')
     except BadZipfile:
-        raise ArgumentTypeError(f"\"{path}\" is not a ZIP file")
+        raise ArgumentTypeError(f'"{path}" is not a ZIP file')
 
 
 def find_init_scripts(contents: dict[str, str]):
@@ -43,3 +43,15 @@ def find_init_scripts(contents: dict[str, str]):
 
     all_tables = create_tables + populate_tables
     return "\n".join(contents[name] for name in all_tables)
+
+
+def student_infos(names: list[str]) -> list[(str, str)]:
+    """Extract student information from file paths."""
+
+    def get_info(name: str) -> (str, str):
+        dir = name.split(os.path.sep)[0]
+        parts = dir.split("_")
+        # First should be student's name and second some ID or something.
+        return (parts[0], parts[1])
+
+    return [get_info(name) for name in names]

@@ -1,4 +1,4 @@
-from .extractor import extract, zipped_file, find_init_scripts
+from .extractor import extract, zipped_file, find_init_scripts, student_infos
 from .checker import init_database
 import argparse
 
@@ -11,7 +11,8 @@ def main():
         print("\n".join(base_db.iterdump()))
 
     with args.exercises as exercises:
-        print(extract(exercises))
+        extracted = extract(exercises)
+        print(student_infos(extracted.keys()))
 
 
 def read_args():
