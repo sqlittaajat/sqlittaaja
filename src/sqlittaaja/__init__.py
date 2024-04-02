@@ -1,11 +1,15 @@
 from .extractor import extract, zipped_file, find_init_scripts
+from .checker import init_database
 import argparse
 
 
 def main():
     args = read_args()
+
     with args.answers as answers:
-        print(find_init_scripts(extract(answers)))
+        base_db = init_database(find_init_scripts(extract(answers)))
+        print("\n".join(base_db.iterdump()))
+
     with args.exercises as exercises:
         print(extract(exercises))
 
