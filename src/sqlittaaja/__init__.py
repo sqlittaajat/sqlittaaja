@@ -1,5 +1,5 @@
-from .extractor import extract, zipped_file, find_init_scripts, student_info
-from .checker import init_database, copy_database
+from sqlittaaja.extractor import extract, zipped_file, find_init_scripts, student_info
+from sqlittaaja.checker import init_database, copy_database
 import argparse
 
 

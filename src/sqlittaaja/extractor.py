@@ -26,7 +26,7 @@ def zipped_file(path: str) -> ZipFile:
         raise ArgumentTypeError(f'"{path}" is not a ZIP file')
 
 
-def find_init_scripts(contents: dict[str, str]):
+def find_init_scripts(contents: dict[str, str]) -> str:
     """Find SQL initialization scripts."""
 
     # We want to use two lists here as the creation tables should come before
