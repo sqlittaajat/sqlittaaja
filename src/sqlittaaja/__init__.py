@@ -39,14 +39,14 @@ def main():
                 answer_dump = list(db.iterdump())
                 # Compare results between student's answer and the correct one.
                 if answer_rows == correct_rows and answer_dump == correct_dump:
-                    student_scores[info[0]] = student_scores.get(
-                        info[0], 0) + 1
+                    student_scores[student_name] = (
+                        student_scores.get(student_name, 0) + 1
+                    )
                 else:
                     raise Exception("Incorrect")
             except Exception:
                 print(f"Incorrect answer for {student_name}")
-                student_scores[info[0]] = student_scores.get(
-                    info[0], 0) + 0
+                student_scores[student_name] = student_scores.get(student_name, 0) + 0
 
     print_scores(student_scores)
 
