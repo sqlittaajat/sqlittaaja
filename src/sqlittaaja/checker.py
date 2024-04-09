@@ -21,6 +21,8 @@ def copy_database(db: sqlite3.Connection) -> sqlite3.Connection:
 
 
 def check_exercises(config: dict[str, Any]) -> dict[str, int]:
+    """Check students' exercises."""
+
     student_scores = {}
 
     # Initialize the base database for everything.
