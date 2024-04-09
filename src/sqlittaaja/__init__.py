@@ -1,10 +1,12 @@
 from sqlittaaja.extractor import extract, zipped_file, find_init_scripts, student_info
 from sqlittaaja.checker import init_database, copy_database
+from sqlittaaja.printer import print_scores
 import argparse
 
 
 def main():
     args = read_args()
+    student_scores = {}
 
     with args.answers as answers:
         extracted = extract(answers)
@@ -37,11 +39,16 @@ def main():
                 answer_dump = list(db.iterdump())
                 # Compare results between student's answer and the correct one.
                 if answer_rows == correct_rows and answer_dump == correct_dump:
-                    print(f"{student_name} +1")
+                    student_scores[student_name] = (
+                        student_scores.get(student_name, 0) + 1
+                    )
                 else:
                     raise Exception("Incorrect")
             except Exception:
                 print(f"Incorrect answer for {student_name}")
+                student_scores[student_name] = student_scores.get(student_name, 0) + 0
+
+    print_scores(student_scores)
 
 
 def read_args():
