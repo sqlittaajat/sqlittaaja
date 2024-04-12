@@ -4,7 +4,7 @@ from zipfile import ZipFile
 from sqlittaaja.extractor import extract, student_info
 
 # Threshold percentage for warning >=
-threshold = 90
+threshold = 99
 
 
 def compare_files(file1_content, file2_content):
