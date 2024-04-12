@@ -19,22 +19,22 @@ def print_scores(student_scores: dict[str, int], similarity_matrix: dict[tuple, 
     print(f"└─{'─' * max_name_len}─┴─{'─' * len(score_col)}─┘")
 
     """Prints similarity percentages."""
+    if similarity_matrix:
+        file_col = "File name"
+        diff_col = "Similarity ratio"
+        # Determine the maximum width.
+        max_file_len = max(max(len(key[0]), len(key[1])) for key in similarity_matrix.keys())
 
-    file_col = "File name"
-    diff_col = "Similarity ratio"
-    # Determine the maximum width.
-    max_file_len = max(max(len(key[0]), len(key[1])) for key in similarity_matrix.keys())
+        # Header part.
+        print(f"┏━{'━' * max_file_len}━┳━{'━' * len(diff_col)}━┓")
+        print(f"┃ {{:^{max_file_len}}} ┃ {{}} ┃".format(file_col, diff_col))
+        print(f"┡━{'━' * max_file_len}━╇━{'━' * len(diff_col)}━┩")
 
-    # Header part.
-    print(f"┏━{'━' * max_file_len}━┳━{'━' * len(diff_col)}━┓")
-    print(f"┃ {{:^{max_file_len}}} ┃ {{}} ┃".format(file_col, diff_col))
-    print(f"┡━{'━' * max_file_len}━╇━{'━' * len(diff_col)}━┩")
-
-    # Each row.
-    for file_name, score in similarity_matrix.items():
-        fmt = f"│ {{:<{max_file_len}}} │ {{:>{len(diff_col)}}} │"
-        print(fmt.format(file_name[0], ""))
-        print(fmt.format(file_name[1], score))
-        print(f"├─{'─' * max_file_len}─┼─{'─' * len(diff_col)}─┤")
-    print(f"└─{'─' * max_file_len}─┴─{'─' * len(diff_col)}─┘")
+        # Each row.
+        for file_name, score in similarity_matrix.items():
+            fmt = f"│ {{:<{max_file_len}}} │ {{:>{len(diff_col)}}} │"
+            print(fmt.format(file_name[0], ""))
+            print(fmt.format(file_name[1], score))
+            print(f"├─{'─' * max_file_len}─┼─{'─' * len(diff_col)}─┤")
+        print(f"└─{'─' * max_file_len}─┴─{'─' * len(diff_col)}─┘")
 
