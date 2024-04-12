@@ -16,4 +16,3 @@ def main():
     diff_check = compute_similarity(config)
 
     print_scores(student_scores, diff_check)
-
