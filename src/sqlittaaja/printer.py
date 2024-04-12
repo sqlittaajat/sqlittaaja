@@ -1,6 +1,5 @@
 def print_scores(student_scores: dict[str, int], similarity_matrix: dict[tuple, str]):
-    # def print_scores(student_scores: dict[str, int]):
-    """Prints student scores."""
+    """Prints student scores and similarity ratios"""
 
     name_col = "student name"
     score_col = "score"
@@ -18,7 +17,7 @@ def print_scores(student_scores: dict[str, int], similarity_matrix: dict[tuple, 
         print(fmt.format(student_name, score))
     print(f"└─{'─' * max_name_len}─┴─{'─' * len(score_col)}─┘")
 
-    """Prints similarity percentages."""
+    # Prints similarity percentages if over treshold.
     if similarity_matrix:
         file_col = "File name"
         diff_col = "Similarity ratio"
