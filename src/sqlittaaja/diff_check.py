@@ -5,12 +5,6 @@ from sqlittaaja.extractor import student_info
 threshold = 0.9
 
 
-def compare_files(file1_content: str, file2_content: str) -> float:
-    """Compute the similarity ratio using SequenceMatcher"""
-
-    return difflib.SequenceMatcher(a=file1_content, b=file2_content).ratio()
-
-
 def compute_similarity(extracted: dict[str, str]) -> dict[tuple[str, str], float]:
     """Check students' exercises."""
 
@@ -21,7 +15,9 @@ def compute_similarity(extracted: dict[str, str]) -> dict[tuple[str, str], float
         for file2, content2 in extracted.items():
             # Exclude self-comparisons
             if file1 != file2:
-                similarity_ratio = compare_files(content1, content2)
+                similarity_ratio = difflib.SequenceMatcher(
+                    a=content1, b=content2
+                ).ratio()
                 if similarity_ratio >= threshold:
                     student1 = student_info(file1)[0]
                     student2 = student_info(file2)[0]
