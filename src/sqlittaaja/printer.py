@@ -1,40 +1,57 @@
-def print_scores(student_scores: dict[str, int], similarity_matrix: dict[tuple, str]):
+def print_scores(
+    student_scores: dict[str, int], similarity_matrix: dict[tuple[str, str], float]
+):
     """Prints student scores and similarity ratios"""
 
-    name_col = "student name"
-    score_col = "score"
-    # Determine the maximum width.
-    max_name_len = max(len(max(student_scores.keys(), key=len)), len(name_col))
+    print_table(
+        [["Student Name", "Score"]]
+        + [[student_name, str(score)] for student_name, score in student_scores.items()]
+    )
 
-    # Header part.
-    print(f"┏━{'━' * max_name_len}━┳━{'━' * len(score_col)}━┓")
-    print(f"┃ {{:^{max_name_len}}} ┃ {{}} ┃".format(name_col, score_col))
-    print(f"┡━{'━' * max_name_len}━╇━{'━' * len(score_col)}━┩")
+    print_table(
+        [["Student Name", "Similarity Ratio"]]
+        + [
+            [names[0] + " => " + names[1], str(round(amount * 100, 2)) + "%"]
+            for names, amount in similarity_matrix.items()
+        ],
+        separators=True,
+    )
 
-    # Each row.
-    for student_name, score in student_scores.items():
-        fmt = f"│ {{:<{max_name_len}}} │ {{:>{len(score_col)}}} │"
-        print(fmt.format(student_name, score))
-    print(f"└─{'─' * max_name_len}─┴─{'─' * len(score_col)}─┘")
 
-    # Prints similarity percentages if over treshold.
-    if similarity_matrix:
-        file_col = "File name"
-        diff_col = "Similarity ratio"
-        # Determine the maximum width.
-        max_file_len = max(
-            max(len(key[0]), len(key[1])) for key in similarity_matrix.keys()
+def print_table(table: list[list[str]], separators: bool = False):
+    """Print a table with pretty formatting."""
+
+    max_column_lens = [
+        # Calculate maximum length for each column.
+        max([len(table[j][i]) for j, _ in enumerate(table)])
+        for i, _ in enumerate(table[0])
+    ]
+
+    # Print header part.
+    print("┏━" + "━┳━".join(["━" * max_len for max_len in max_column_lens]) + "━┓")
+    print(
+        "┃ "
+        + " ┃ ".join(
+            [title.ljust(max_column_lens[i]) for i, title in enumerate(table[0])]
         )
+        + " ┃"
+    )
+    print("┡━" + "━╇━".join(["━" * max_len for max_len in max_column_lens]) + "━┩")
 
-        # Header part.
-        print(f"┏━{'━' * max_file_len}━┳━{'━' * len(diff_col)}━┓")
-        print(f"┃ {{:^{max_file_len}}} ┃ {{}} ┃".format(file_col, diff_col))
-        print(f"┡━{'━' * max_file_len}━╇━{'━' * len(diff_col)}━┩")
-
-        # Each row.
-        for file_name, score in similarity_matrix.items():
-            fmt = f"│ {{:<{max_file_len}}} │ {{:>{len(diff_col)}}} │"
-            print(fmt.format(file_name[0], ""))
-            print(fmt.format(file_name[1], score))
-            print(f"├─{'─' * max_file_len}─┼─{'─' * len(diff_col)}─┤")
-        print(f"└─{'─' * max_file_len}─┴─{'─' * len(diff_col)}─┘")
+    # Print each row one-by-one.
+    for i, row in enumerate(table[1:]):
+        print(
+            "│ "
+            + " │ ".join(
+                [
+                    value.ljust(max_column_lens[j])
+                    for j, value in enumerate(table[i + 1])
+                ]
+            )
+            + " │"
+        )
+        if separators and i + 1 < len(table) - 1:
+            print(
+                "├─" + "─┼─".join(["─" * max_len for max_len in max_column_lens]) + "─┤"
+            )
+    print("└─" + "─┴─".join(["─" * max_len for max_len in max_column_lens]) + "─┘")

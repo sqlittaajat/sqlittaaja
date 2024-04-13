@@ -1,7 +1,5 @@
 import sqlite3
-from typing import Any
-from zipfile import ZipFile
-from sqlittaaja.extractor import extract, student_info
+from sqlittaaja.extractor import student_info
 
 
 def init_database(script: str) -> sqlite3.Connection:
@@ -20,36 +18,36 @@ def copy_database(db: sqlite3.Connection) -> sqlite3.Connection:
     return new_db
 
 
-def check_exercises(config: dict[str, Any]) -> dict[str, int]:
+def check_exercises(
+    init_script: str, answer: str, exercises: dict[str, str]
+) -> dict[str, int]:
     """Check students' exercises."""
 
     student_scores = {}
 
     # Initialize the base database for everything.
-    base_db = init_database(config["answer"].get("initialize", ""))
+    base_db = init_database(init_script)
 
     # Generate information for the correct answer.
-    correct_rows = base_db.execute(config["answer"]["exercise"]).fetchall()
+    correct_rows = base_db.execute(answer).fetchall()
     correct_dump = list(base_db.iterdump())
 
-    with ZipFile(config["exercise"]["path"], "r") as exercises:
-        extracted = extract(exercises)
-        # Go through each student one by one.
-        for info in [(student_info(key), extracted[key]) for key in extracted.keys()]:
-            student_name = info[0][0]
-            answer = info[1]
+    # Go through each student one by one.
+    for info in [(student_info(key), exercises[key]) for key in exercises.keys()]:
+        student_name = info[0][0]
+        answer = info[1]
 
-            student_scores[student_name] = 0
+        student_scores[student_name] = 0
 
-            # Copy the whole database just in case.
-            db = copy_database(base_db)
-            try:
-                answer_rows = db.execute(answer).fetchall()
-                answer_dump = list(db.iterdump())
-                # Compare results between student's answer and the correct one.
-                if answer_rows == correct_rows and answer_dump == correct_dump:
-                    student_scores[student_name] += 1
-            except Exception:
-                print(f"Failed to run {student_name}'s answer")
+        # Copy the whole database just in case.
+        db = copy_database(base_db)
+        try:
+            answer_rows = db.execute(answer).fetchall()
+            answer_dump = list(db.iterdump())
+            # Compare results between student's answer and the correct one.
+            if answer_rows == correct_rows and answer_dump == correct_dump:
+                student_scores[student_name] += 1
+        except Exception:
+            print(f"Failed to run {student_name}'s answer")
 
-    return student_scores, extracted
+    return student_scores

@@ -1,29 +1,17 @@
-from zipfile import ZipFile, BadZipfile
-from argparse import ArgumentTypeError
+from zipfile import ZipFile
 import os
 
 
-def extract(file: ZipFile) -> dict[str, str]:
+def extract(path: str) -> dict[str, str]:
     """Reads a ZIP file and returns the contents."""
 
-    with file as zip:
+    with ZipFile(path, "r") as zip:
         return {
             name: zip.read(name).decode()
             for name in
             # Filter out directories.
             filter(lambda name: not name.endswith(os.path.sep), zip.namelist())
         }
-
-
-def zipped_file(path: str) -> ZipFile:
-    """ZIP file type for `argparse`. Use as type for `add_argument`."""
-
-    try:
-        return ZipFile(path, "r")
-    except FileNotFoundError:
-        raise ArgumentTypeError(f'"{path}" file does not exist')
-    except BadZipfile:
-        raise ArgumentTypeError(f'"{path}" is not a ZIP file')
 
 
 def find_init_scripts(contents: dict[str, str]) -> str:
