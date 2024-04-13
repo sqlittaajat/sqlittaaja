@@ -1,7 +1,10 @@
 import difflib
 from sqlittaaja.extractor import student_info
 
-def compute_similarity(treshold_pct: float, extracted: dict[str, str]) -> dict[str, list[tuple[str, float]]]:
+
+def compute_similarity(
+    treshold_pct: float, extracted: dict[str, str]
+) -> dict[str, list[tuple[str, float]]]:
     """Check students' exercises."""
 
     result = {}
