@@ -52,4 +52,4 @@ def check_exercises(config: dict[str, Any]) -> dict[str, int]:
             except Exception:
                 print(f"Failed to run {student_name}'s answer")
 
-    return student_scores
+    return student_scores, extracted
