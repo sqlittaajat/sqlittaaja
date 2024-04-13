@@ -1,5 +1,9 @@
+import itertools
+
+
 def print_scores(
-    student_scores: dict[str, int], similarity_matrix: dict[tuple[str, str], float]
+    student_scores: dict[str, int],
+    answer_similarities: dict[str, list[tuple[str, float]]],
 ):
     """Prints student scores and similarity ratios"""
 
@@ -8,14 +12,23 @@ def print_scores(
         + [[student_name, str(score)] for student_name, score in student_scores.items()]
     )
 
-    print_table(
-        [["Student Name", "Similarity Ratio"]]
-        + [
-            [names[0] + " => " + names[1], str(round(amount * 100, 2)) + "%"]
-            for names, amount in similarity_matrix.items()
-        ],
-        separators=True,
-    )
+    if answer_similarities:
+        print_table(
+            [["Student Name", "Similarity Ratio"]]
+            + list(
+                itertools.chain.from_iterable(
+                    [
+                        [
+                            name + " => " + similarity[0],
+                            str(round(similarity[1] * 100, 2)) + "%",
+                        ]
+                        for similarity in similarities
+                    ]
+                    for name, similarities in answer_similarities.items()
+                )
+            ),
+            separators=True,
+        )
 
 
 def print_table(table: list[list[str]], separators: bool = False):

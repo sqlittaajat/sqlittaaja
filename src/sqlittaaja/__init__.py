@@ -17,6 +17,6 @@ def main():
     exercises = extract(config["exercise"]["path"])
 
     student_scores = check_exercises(init_script, answer, exercises)
-    diff_check = compute_similarity(exercises)
+    answer_similarities = compute_similarity(exercises)
 
-    print_scores(student_scores, diff_check)
+    print_scores(student_scores, answer_similarities)
