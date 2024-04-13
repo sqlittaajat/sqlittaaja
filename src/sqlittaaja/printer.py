@@ -1,4 +1,6 @@
-def print_scores(student_scores: dict[str, int], similarity_matrix: dict[tuple, str]):
+def print_scores(
+    student_scores: dict[str, int], similarity_matrix: dict[tuple[str, str], float]
+):
     """Prints student scores and similarity ratios"""
 
     print_table(
@@ -9,7 +11,7 @@ def print_scores(student_scores: dict[str, int], similarity_matrix: dict[tuple, 
     print_table(
         [["Student Name", "Similarity Ratio"]]
         + [
-            [names[0] + " => " + names[1], amount]
+            [names[0] + " => " + names[1], str(round(amount * 100, 2)) + "%"]
             for names, amount in similarity_matrix.items()
         ],
         separators=True,

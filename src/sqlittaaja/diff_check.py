@@ -2,19 +2,16 @@ import difflib
 from sqlittaaja.extractor import student_info
 
 # Threshold percentage for warning >=
-threshold = 90
+threshold = 0.9
 
 
-def compare_files(file1_content, file2_content):
+def compare_files(file1_content: str, file2_content: str) -> float:
     """Compute the similarity ratio using SequenceMatcher"""
 
-    similarity_ratio = (
-        difflib.SequenceMatcher(None, file1_content, file2_content).ratio() * 100
-    )
-    return similarity_ratio
+    return difflib.SequenceMatcher(a=file1_content, b=file2_content).ratio()
 
 
-def compute_similarity(extracted):
+def compute_similarity(extracted: dict[str, str]) -> dict[tuple[str, str], float]:
     """Check students' exercises."""
 
     similarity_matrix = {}
@@ -26,8 +23,8 @@ def compute_similarity(extracted):
             if file1 != file2:
                 similarity_ratio = compare_files(content1, content2)
                 if similarity_ratio >= threshold:
-                    similarity_matrix[
-                        (student_info(file1)[0], student_info(file2)[0])
-                    ] = (str(round(similarity_ratio, 2)) + "%")
+                    student1 = student_info(file1)[0]
+                    student2 = student_info(file2)[0]
+                    similarity_matrix[(student1, student2)] = similarity_ratio
 
     return similarity_matrix
