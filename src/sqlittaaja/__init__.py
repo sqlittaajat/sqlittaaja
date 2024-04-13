@@ -11,8 +11,8 @@ def main():
     config = tomllib.load(args.config)
     validate_config(config)
 
-    student_scores = check_exercises(config)
+    student_scores, extracted = check_exercises(config)
 
-    diff_check = compute_similarity(config)
+    diff_check = compute_similarity(extracted)
 
     print_scores(student_scores, diff_check)
