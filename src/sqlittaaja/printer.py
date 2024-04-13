@@ -4,22 +4,31 @@ def print_scores(
 ):
     """Prints student scores and similarity ratios"""
 
-    print_table(
-        [["Student Name", "Score", "Similarity"]]
-        + [
-            [
-                student_name,
-                str(score),
-                # Show similarity for each student.
-                "\n".join(
-                    f"{similarity[0]} ({str(round(similarity[1] * 100, 2))}%)"
-                    for similarity in answer_similarities.get(student_name, [])
-                ),
-            ]
-            for student_name, score in student_scores.items()
-        ],
-        separators=True,
-    )
+    if answer_similarities:
+        print_table(
+            [["Student Name", "Score", "Similarity"]]
+            + [
+                [
+                    student_name,
+                    str(score),
+                    # Show similarity for each student.
+                    "\n".join(
+                        f"{similarity[0]} ({str(round(similarity[1] * 100, 2))}%)"
+                        for similarity in answer_similarities.get(student_name, [])
+                    ),
+                ]
+                for student_name, score in student_scores.items()
+            ],
+            separators=True,
+        )
+    else:
+        print_table(
+            [["Student Name", "Score"]]
+            + [
+                [student_name, str(score)]
+                for student_name, score in student_scores.items()
+            ],
+        )
 
 
 def print_table(table: list[list[str]], separators: bool = False):
@@ -27,7 +36,12 @@ def print_table(table: list[list[str]], separators: bool = False):
 
     max_column_lens = [
         # Calculate maximum length for each column.
-        max([len(max(table[j][i].splitlines(), key=len)) for j, _ in enumerate(table)])
+        max(
+            [
+                len(max(table[j][i].splitlines(), key=len, default=""))
+                for j, _ in enumerate(table)
+            ]
+        )
         for i, _ in enumerate(table[0])
     ]
 
