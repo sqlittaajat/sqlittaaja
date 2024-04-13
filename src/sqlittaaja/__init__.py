@@ -15,8 +15,10 @@ def main():
     init_script = config["answer"].get("initialize", "")
     answer = config["answer"]["exercise"]
     exercises = extract(config["exercise"]["path"])
+    # Treshold default 90% if not in config.toml
+    treshold_pct = config["check_options"].get("treshold_pct", 0.9)
 
     student_scores = check_exercises(init_script, answer, exercises)
-    answer_similarities = compute_similarity(exercises)
+    answer_similarities = compute_similarity(treshold_pct, exercises)
 
     print_scores(student_scores, answer_similarities)
