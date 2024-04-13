@@ -13,6 +13,7 @@ def extract(path: str) -> dict[str, str]:
             filter(lambda name: not name.endswith(os.path.sep), zip.namelist())
         }
 
+
 def student_info(name: str) -> (str, str):
     """Extract student information from file path."""
 
