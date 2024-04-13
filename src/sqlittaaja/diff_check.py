@@ -26,12 +26,8 @@ def compute_similarity(extracted):
             if file1 != file2:
                 similarity_ratio = compare_files(content1, content2)
                 if similarity_ratio >= threshold:
-                    # Make more readable: student name + filename
-                    student1 = student_info(file1)[0] + "/" + file1.rsplit("/", 1)[-1]
-                    student2 = student_info(file2)[0] + "/" + file2.rsplit("/", 1)[-1]
-
-                    similarity_matrix[(student1, student2)] = (
-                        str(round(similarity_ratio, 2)) + "%"
-                    )
+                    similarity_matrix[
+                        (student_info(file1)[0], student_info(file2)[0])
+                    ] = (str(round(similarity_ratio, 2)) + "%")
 
     return similarity_matrix

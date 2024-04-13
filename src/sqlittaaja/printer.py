@@ -7,7 +7,7 @@ def print_scores(student_scores: dict[str, int], similarity_matrix: dict[tuple, 
     )
 
     print_table(
-        [["File Name", "Similarity Ratio"]]
+        [["Student Name", "Similarity Ratio"]]
         + [
             [names[0] + " => " + names[1], amount]
             for names, amount in similarity_matrix.items()
