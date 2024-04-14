@@ -29,6 +29,8 @@ def validate_config(config: dict[str, Any]):
         raise MissingSectionError("answer")
     if config.get("exercise") is None:
         raise MissingSectionError("exercise")
+    if config.get("check_options") is None:
+        raise MissingSectionError("check_options")
 
     if config["answer"].get("exercise") is None:
         raise MissingValueError("answer", "exercise")
