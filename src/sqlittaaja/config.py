@@ -29,6 +29,15 @@ def validate_config(config: dict[str, Any]):
         raise MissingSectionError("answer")
     if config.get("exercise") is None:
         raise MissingSectionError("exercise")
+    threshold_pct = config.get("check_options", {}).get("treshold_pct")
+    if threshold_pct is not None:
+        if (
+            not isinstance(threshold_pct, (float, int))
+            or not 0.0 <= threshold_pct <= 1.0
+        ):
+            raise ValueError(
+                "Invalid value for 'treshold_pct'. Must be a float between 0.0 and 1.0."
+            )
 
     if config["answer"].get("exercise") is None:
         raise MissingValueError("answer", "exercise")

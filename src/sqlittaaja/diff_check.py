@@ -1,11 +1,10 @@
 import difflib
 from sqlittaaja.extractor import student_info
 
-# Threshold percentage for warning >=
-threshold = 0.9
 
-
-def compute_similarity(extracted: dict[str, str]) -> dict[str, list[tuple[str, float]]]:
+def compute_similarity(
+    treshold_pct: float, extracted: dict[str, str]
+) -> dict[str, list[tuple[str, float]]]:
     """Check students' exercises."""
 
     result = {}
@@ -20,7 +19,7 @@ def compute_similarity(extracted: dict[str, str]) -> dict[str, list[tuple[str, f
                     a=content1, b=content2
                 ).ratio()
 
-                if similarity_ratio >= threshold:
+                if similarity_ratio >= treshold_pct:
                     student1 = student_info(file1)[0]
                     student2 = student_info(file2)[0]
 
