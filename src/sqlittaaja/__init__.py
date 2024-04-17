@@ -13,15 +13,12 @@ def main():
     for path, answer in config.exercises:
         exercises = extract(path)
 
-        student_scores = check_exercises(
-            config.initialize_script, answer, exercises)
-        answer_similarities = compute_similarity(
-            config.threshold_pct, exercises)
+        student_scores = check_exercises(config.initialize_script, answer, exercises)
+        answer_similarities = compute_similarity(config.threshold_pct, exercises)
 
         # Add the score in order to accumulate overall score for each student.
         for student_name, score in student_scores.items():
-            total_scores[student_name] = total_scores.get(
-                student_name, 0) + score
+            total_scores[student_name] = total_scores.get(student_name, 0) + score
 
         # Print scores for each individual exercise packet.
         print(f"Scores for '{path}'")

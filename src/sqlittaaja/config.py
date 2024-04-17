@@ -19,8 +19,7 @@ class Config:
                     case str(value):
                         self.initialize_script = value
                     case value if value is not None:
-                        raise ValueError(
-                            "Invalid type for 'answer.initialize'")
+                        raise ValueError("Invalid type for 'answer.initialize'")
 
         match config.get("exercises"):
             case list(exercises_section):
