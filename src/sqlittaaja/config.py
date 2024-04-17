@@ -8,7 +8,6 @@ class Config:
     """Application level configuration options."""
 
     initialize_script: str = ""
-    answer: str
     exercises: list[(str, str)] = []
     threshold_pct: float = 0.9
 
@@ -18,6 +17,16 @@ class Config:
                 match answer_section.get("initialize"):
                     case str(value):
                         self.initialize_script = value
+                    case None:
+                        # Check for the initialization script file instead.
+                        match answer_section.get("initialize_path"):
+                            case str(path):
+                                with open(path, "r") as file:
+                                    self.initialize_script = "\n".join(file.readlines())
+                            case value if value is not None:
+                                raise ValueError(
+                                    "Invalid type for 'answer.initialize_path'"
+                                )
                     case value if value is not None:
                         raise ValueError("Invalid type for 'answer.initialize'")
 
