@@ -1,34 +1,37 @@
 def print_scores(
     student_scores: dict[str, int],
-    answer_similarities: dict[str, list[tuple[str, float]]],
+    answer_similarities: dict[str, list[tuple[str, float]]] = {},
+    max_score=0,
 ):
     """Prints student scores and similarity ratios"""
+
+    scores_list = [
+        [
+            student_name,
+            f"{score} / {max_score}" if max_score > 0 else str(score),
+        ]
+        for student_name, score in student_scores.items()
+    ]
 
     if answer_similarities:
         print_table(
             [["Student Name", "Score", "Similarity"]]
             + [
                 [
-                    student_name,
-                    str(score),
+                    student_score[0],
+                    student_score[1],
                     # Show similarity for each student.
                     "\n".join(
                         f"{similarity[0]} ({str(round(similarity[1] * 100, 2))}%)"
-                        for similarity in answer_similarities.get(student_name, [])
+                        for similarity in answer_similarities.get(student_score[0], [])
                     ),
                 ]
-                for student_name, score in student_scores.items()
+                for student_score in scores_list
             ],
             separators=True,
         )
     else:
-        print_table(
-            [["Student Name", "Score"]]
-            + [
-                [student_name, str(score)]
-                for student_name, score in student_scores.items()
-            ],
-        )
+        print_table([["Student Name", "Score"]] + scores_list)
 
 
 def print_table(table: list[list[str]], separators: bool = False):
