@@ -28,4 +28,4 @@ def main():
 
     # Print the final scores for each student.
     print("Total scores")
-    print_scores(total_scores)
+    print_scores(total_scores, max_score=len(config.exercise_paths))
