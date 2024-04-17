@@ -1,5 +1,6 @@
 import argparse
 import tomllib
+import os
 from typing import Any
 
 
@@ -75,7 +76,10 @@ def read_args() -> Config:
     # Helper function for converting the command line argument into `Config`.
     def load_config(path: str) -> Config:
         try:
-            return Config(path)
+            config = Config(path)
+            # Change the current working directory to where the config is.
+            os.chdir(os.path.abspath(os.path.dirname(path)))
+            return config
         except Exception as e:
             # Convert any exception to ArgumentTypeError.
             raise argparse.ArgumentTypeError(e)
