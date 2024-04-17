@@ -16,7 +16,8 @@ def main():
     answer = config["answer"]["exercise"]
     exercises = extract(config["exercise"]["path"])
     # Treshold default 90% if not in config.toml
-    treshold_pct = config["check_options"].get("treshold_pct", 0.9)
+    check_options = config.get("check_options", {})
+    treshold_pct = check_options.get("treshold_pct", 0.9)
 
     student_scores = check_exercises(init_script, answer, exercises)
     answer_similarities = compute_similarity(treshold_pct, exercises)
