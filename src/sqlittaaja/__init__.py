@@ -10,7 +10,7 @@ def main():
     # Type hint the configuration.
     config: Config = args.config
 
-    exercises = extract(config.exercises_path)
+    exercises = extract(config.exercise_paths[0])
     student_scores = check_exercises(config.initialize_script, config.answer, exercises)
     answer_similarities = compute_similarity(config.threshold_pct, exercises)
 

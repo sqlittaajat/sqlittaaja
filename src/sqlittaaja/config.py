@@ -7,48 +7,62 @@ class Config:
 
     initialize_script: str = ""
     answer: str
-    exercises_path: str
+    exercise_paths: list[str] = []
     threshold_pct: float = 0.9
 
     def __init__(self, path: str):
         with open(path, "rb") as file:
             config = tomllib.load(file)
 
-            answer_section = config.get("answer", {})
-            match answer_section.get("initialize"):
-                case str(value):
-                    self.initialize_script = value
-                case value if value is not None:
-                    raise ValueError("invalid type for 'answer.initialize'")
-            match answer_section.get("exercise"):
-                case str(value):
-                    self.answer = value
-                case None:
-                    raise ValueError("missing 'answer.exercise' value")
-                case _:
-                    raise ValueError("invalid type for 'answer.exercise'")
+            match config.get("answer"):
+                case dict(answer_section):
+                    match answer_section.get("initialize"):
+                        case str(value):
+                            self.initialize_script = value
+                        case value if value is not None:
+                            raise ValueError("invalid type for 'answer.initialize'")
+                    match answer_section.get("exercise"):
+                        case str(value):
+                            self.answer = value
+                        case None:
+                            raise ValueError("missing 'answer.exercise' value")
+                        case _:
+                            raise ValueError("invalid type for 'answer.exercise'")
 
-            exercise_section = config.get("exercise", {})
-            match exercise_section.get("path"):
-                case str(exercises_path):
-                    self.exercises_path = exercises_path
-                case None:
-                    raise ValueError("missing 'exercise.path' value")
-                case _:
-                    raise ValueError("invalid type for 'exercise.path'")
+            match config.get("exercises"):
+                case list(exercises_section):
 
-            check_options_section = config.get("check_options", {})
-            match check_options_section.get("threshold_pct"):
-                case int(value) | float(value):
-                    if 0.0 <= value <= 1.0:
-                        # Make sure threshold is actually a float.
-                        self.threshold_pct = float(value)
-                    else:
-                        raise ValueError(
-                            "'check_options.threshold_pct' must be in range [0.0, 1.0]"
-                        )
-                case value if value is not None:
-                    raise ValueError("invalid type for 'check_options.threshold_pct'")
+                    def get_exercise_path(exercise) -> str:
+                        match exercise:
+                            case {"path": str(path)}:
+                                return path
+                            case _:
+                                raise ValueError(
+                                    "invalid or missing path value in some exercise"
+                                )
+
+                    # Extract each path value from exercises.
+                    self.exercise_paths = list(
+                        map(get_exercise_path, exercises_section)
+                    )
+                case _:
+                    raise ValueError("no exercises defined")
+
+            match config.get("check_options"):
+                case dict(check_options_section):
+                    match check_options_section.get("threshold_pct"):
+                        case int(value) | float(value):
+                            if 0.0 <= value <= 1.0:
+                                # Make sure threshold is actually a float.
+                                self.threshold_pct = float(value)
+                            else:
+                                raise ValueError(
+                                    "'check_options.threshold_pct' must be in range [0.0, 1.0]"
+                                )
+                        case value if value is not None:
+                            raise ValueError(
+                                "invalid type for 'check_options.threshold_pct'"
+                            )
 
 
 def read_args() -> argparse.Namespace:
