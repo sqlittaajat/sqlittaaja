@@ -1,25 +1,17 @@
 from sqlittaaja.printer import print_scores
-from sqlittaaja.config import read_args, validate_config
+from sqlittaaja.config import read_args, Config
 from sqlittaaja.checker import check_exercises
 from sqlittaaja.diff_check import compute_similarity
 from sqlittaaja.extractor import extract
-import tomllib
 
 
 def main():
     args = read_args()
+    # Type hint the configuration.
+    config: Config = args.config
 
-    config = tomllib.load(args.config)
-    validate_config(config)
-
-    init_script = config["answer"].get("initialize", "")
-    answer = config["answer"]["exercise"]
-    exercises = extract(config["exercise"]["path"])
-    # Treshold default 90% if not in config.toml
-    check_options = config.get("check_options", {})
-    treshold_pct = check_options.get("treshold_pct", 0.9)
-
-    student_scores = check_exercises(init_script, answer, exercises)
-    answer_similarities = compute_similarity(treshold_pct, exercises)
+    exercises = extract(config.exercises_path)
+    student_scores = check_exercises(config.initialize_script, config.answer, exercises)
+    answer_similarities = compute_similarity(config.threshold_pct, exercises)
 
     print_scores(student_scores, answer_similarities)
