@@ -1,6 +1,6 @@
 def print_scores(
     student_scores: dict[str, int],
-    answer_similarities: dict[str, list[tuple[str, float]]],
+    answer_similarities: dict[str, list[tuple[str, float]]] = {},
 ):
     """Prints student scores and similarity ratios"""
 
