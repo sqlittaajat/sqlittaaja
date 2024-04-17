@@ -9,7 +9,7 @@ class Config:
 
     initialize_script: str = ""
     answer: str
-    exercise_paths: list[str] = []
+    exercises: list[(str, str)] = []
     threshold_pct: float = 0.9
 
     def parse(self, config: dict[str, Any]):
@@ -19,29 +19,26 @@ class Config:
                     case str(value):
                         self.initialize_script = value
                     case value if value is not None:
-                        raise ValueError("Invalid type for 'answer.initialize'")
-                match answer_section.get("exercise"):
-                    case str(value):
-                        self.answer = value
-                    case None:
-                        raise ValueError("Missing 'answer.exercise' value")
-                    case _:
-                        raise ValueError("Invalid type for 'answer.exercise'")
+                        raise ValueError(
+                            "Invalid type for 'answer.initialize'")
 
         match config.get("exercises"):
             case list(exercises_section):
 
-                def get_exercise_path(exercise) -> str:
+                def get_exercise(exercise) -> (str, str):
                     match exercise:
-                        case {"path": str(path)}:
-                            return path
+                        case {"path": str(path), "answer": str(answer)}:
+                            return (path, answer)
+                        case {"path": str(path), "answer_path": str(answer_path)}:
+                            with open(answer_path, "r") as file:
+                                return (path, "\n".join(file.readlines()))
                         case _:
                             raise ValueError(
-                                "Invalid or missing path value in some exercise"
+                                "Invalid or missing path/answer values in some exercise"
                             )
 
-                # Extract each path value from exercises.
-                self.exercise_paths = list(map(get_exercise_path, exercises_section))
+                # Extract each path/answer value from exercises.
+                self.exercises = list(map(get_exercise, exercises_section))
             case _:
                 raise ValueError("No exercises defined")
 
@@ -76,10 +73,10 @@ def read_args() -> Config:
     # Helper function for converting the command line argument into `Config`.
     def load_config(path: str) -> Config:
         try:
-            config = Config(path)
+            config_path = os.path.abspath(path)
             # Change the current working directory to where the config is.
             os.chdir(os.path.abspath(os.path.dirname(path)))
-            return config
+            return Config(config_path)
         except Exception as e:
             # Convert any exception to ArgumentTypeError.
             raise argparse.ArgumentTypeError(e)
