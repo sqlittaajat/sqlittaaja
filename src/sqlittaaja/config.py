@@ -34,28 +34,12 @@ class Config:
             case list(exercises_section):
 
                 def get_exercise(exercise) -> (str, str, list[str]):
-                    must_contain: list[str] = []
                     match exercise:
                         case {"path": str(path), "answer": str(answer)}:
-                            match exercise.get("must_contain"):
-                                case list(value):
-                                    if all(isinstance(item, str) for item in value):
-                                        must_contain = value
-                                    else:
-                                        raise ValueError("All elements in 'must_contain' must be strings")
-                                case value if value is not None:
-                                    raise ValueError("Invalid type for 'must_contain'")
+                            must_contain = process_must_contain(exercise.get("must_contain"))
                             return (path, answer, must_contain)
                         case {"path": str(path), "answer_path": str(answer_path)}:
-                            match exercise.get("must_contain"):
-                                case list(value):
-                                    if all(isinstance(item, str) for item in value):
-                                        must_contain = value
-                                    else:
-                                        raise ValueError("All elements in 'must_contain' must be strings")
-                                case value if value is not None:
-                                    raise ValueError("Invalid type for 'must_contain'")
-                                
+                            must_contain = process_must_contain(exercise.get("must_contain"))
                             with open(answer_path, "r") as file:
                                 return (path, "\n".join(file.readlines()), must_contain)
                         case _:
@@ -88,7 +72,17 @@ class Config:
         with open(path, "rb") as file:
             self.parse(tomllib.load(file))
 
-
+def process_must_contain(must_contain):
+    if must_contain is None:
+        return []
+    elif isinstance(must_contain, list):
+        if all(isinstance(item, str) for item in must_contain):
+            return must_contain
+        else:
+            raise ValueError("All elements in 'must_contain' must be strings")
+    else:
+        raise ValueError("Invalid type for 'must_contain'")
+        
 def read_args() -> Config:
     """Reads command line arguments. Returns the parsed configuration file."""
 
