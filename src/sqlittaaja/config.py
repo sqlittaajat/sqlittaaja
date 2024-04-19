@@ -33,19 +33,30 @@ class Config:
         match config.get("exercises"):
             case list(exercises_section):
 
-                def get_exercise(exercise) -> (str, str, list[str]):
+                def get_exercise(exercise) -> (str, str, list[str], list[str]):
                     match exercise:
                         case {"path": str(path), "answer": str(answer)}:
-                            must_contain = process_must_contain(
-                                exercise.get("must_contain")
+                            must_contain = process_word_list(
+                                exercise.get("must_contain"), "must_contain"
                             )
-                            return (path, answer, must_contain)
+                            must_not_contain = process_word_list(
+                                exercise.get("must_not_contain"), "must_not_contain"
+                            )
+                            return (path, answer, must_contain, must_not_contain)
                         case {"path": str(path), "answer_path": str(answer_path)}:
-                            must_contain = process_must_contain(
-                                exercise.get("must_contain")
+                            must_contain = process_word_list(
+                                exercise.get("must_contain"), "must_contain"
+                            )
+                            must_not_contain = process_word_list(
+                                exercise.get("must_not_contain"), "must_not_contain"
                             )
                             with open(answer_path, "r") as file:
-                                return (path, "\n".join(file.readlines()), must_contain)
+                                return (
+                                    path,
+                                    "\n".join(file.readlines()),
+                                    must_contain,
+                                    must_not_contain,
+                                )
                         case _:
                             raise ValueError(
                                 "Invalid or missing path/answer values in some exercise"
@@ -77,16 +88,16 @@ class Config:
             self.parse(tomllib.load(file))
 
 
-def process_must_contain(must_contain):
-    if must_contain is None:
+def process_word_list(value, name: str):
+    if value is None:
         return []
-    elif isinstance(must_contain, list):
-        if all(isinstance(item, str) for item in must_contain):
-            return must_contain
+    elif isinstance(value, list):
+        if all(isinstance(item, str) for item in value):
+            return value
         else:
-            raise ValueError("All elements in 'must_contain' must be strings")
+            raise ValueError(f"All elements in '{name}' must be strings")
     else:
-        raise ValueError("Invalid type for 'must_contain'")
+        raise ValueError(f"Invalid type for '{name}'")
 
 
 def read_args() -> Config:

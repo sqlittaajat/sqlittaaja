@@ -19,7 +19,11 @@ def copy_database(db: sqlite3.Connection) -> sqlite3.Connection:
 
 
 def check_exercises(
-    init_script: str, answer: str, exercises: dict[str, str], must_contain: list[str]
+    init_script: str,
+    answer: str,
+    exercises: dict[str, str],
+    must_contain: list[str],
+    must_not_contain: list[str],
 ) -> dict[str, int]:
     """Check students' exercises."""
 
@@ -40,6 +44,9 @@ def check_exercises(
         student_scores[student_name] = 0
 
         if not all(word in remove_sql_comments(answer) for word in must_contain):
+            continue
+
+        if any(word in remove_sql_comments(answer) for word in must_not_contain):
             continue
 
         # Copy the whole database just in case.
