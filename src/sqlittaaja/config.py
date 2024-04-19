@@ -8,9 +8,8 @@ class Config:
     """Application level configuration options."""
 
     initialize_script: str = ""
-    exercises: list[(str, str)] = []
+    exercises: list[(str, str, list[str])] = []
     threshold_pct: float = 0.9
-    must_contain: list[str] = []
 
     def parse(self, config: dict[str, Any]):
         match config.get("answer"):
@@ -34,13 +33,31 @@ class Config:
         match config.get("exercises"):
             case list(exercises_section):
 
-                def get_exercise(exercise) -> (str, str):
+                def get_exercise(exercise) -> (str, str, list[str]):
+                    must_contain: list[str] = []
                     match exercise:
                         case {"path": str(path), "answer": str(answer)}:
-                            return (path, answer)
+                            match exercise.get("must_contain"):
+                                case list(value):
+                                    if all(isinstance(item, str) for item in value):
+                                        must_contain = value
+                                    else:
+                                        raise ValueError("All elements in 'must_contain' must be strings")
+                                case value if value is not None:
+                                    raise ValueError("Invalid type for 'must_contain'")
+                            return (path, answer, must_contain)
                         case {"path": str(path), "answer_path": str(answer_path)}:
+                            match exercise.get("must_contain"):
+                                case list(value):
+                                    if all(isinstance(item, str) for item in value):
+                                        must_contain = value
+                                    else:
+                                        raise ValueError("All elements in 'must_contain' must be strings")
+                                case value if value is not None:
+                                    raise ValueError("Invalid type for 'must_contain'")
+                                
                             with open(answer_path, "r") as file:
-                                return (path, "\n".join(file.readlines()))
+                                return (path, "\n".join(file.readlines()), must_contain)
                         case _:
                             raise ValueError(
                                 "Invalid or missing path/answer values in some exercise"
@@ -65,16 +82,6 @@ class Config:
                     case value if value is not None:
                         raise ValueError(
                             "Invalid type for 'check_options.threshold_pct'"
-                        )
-                match check_options_section.get("must_contain"):
-                    case list(value):
-                        if all(isinstance(item, str) for item in value):
-                            self.must_contain = value
-                        else:
-                            raise ValueError("All elements in 'must_contain' must be strings")
-                    case value if value is not None:
-                        raise ValueError(
-                            "Invalid type for 'must_contain'"
                         )
 
     def __init__(self, path: str):
