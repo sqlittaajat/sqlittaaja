@@ -10,6 +10,7 @@ class Config:
     initialize_script: str = ""
     exercises: list[(str, str)] = []
     threshold_pct: float = 0.9
+    must_contain: list[str] = []
 
     def parse(self, config: dict[str, Any]):
         match config.get("answer"):
@@ -64,6 +65,16 @@ class Config:
                     case value if value is not None:
                         raise ValueError(
                             "Invalid type for 'check_options.threshold_pct'"
+                        )
+                match check_options_section.get("must_contain"):
+                    case list(value):
+                        if all(isinstance(item, str) for item in value):
+                            self.must_contain = value
+                        else:
+                            raise ValueError("All elements in 'must_contain' must be strings")
+                    case value if value is not None:
+                        raise ValueError(
+                            "Invalid type for 'must_contain'"
                         )
 
     def __init__(self, path: str):
