@@ -1,4 +1,4 @@
-import sqlite3
+import sqlite3, re
 from sqlittaaja.extractor import student_info
 
 
@@ -39,7 +39,7 @@ def check_exercises(
 
         student_scores[student_name] = 0
 
-        if not all(word in answer for word in must_contain):
+        if not all(word in remove_sql_comments(answer) for word in must_contain):
             continue
 
         # Copy the whole database just in case.
@@ -54,3 +54,7 @@ def check_exercises(
             print(f"Failed to run {student_name}'s answer")
 
     return student_scores
+
+def remove_sql_comments(sql_string):
+    pattern = r'(([\"\'])(?:(?=(\\?))\3.)*?\2)|(--.*?$|\/\*[\s\S]*?\*\/)'
+    return re.sub(pattern, lambda m: m.group(1) if m.group(1) else '', sql_string, flags=re.MULTILINE)
