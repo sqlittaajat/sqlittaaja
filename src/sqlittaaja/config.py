@@ -36,10 +36,14 @@ class Config:
                 def get_exercise(exercise) -> (str, str, list[str]):
                     match exercise:
                         case {"path": str(path), "answer": str(answer)}:
-                            must_contain = process_must_contain(exercise.get("must_contain"))
+                            must_contain = process_must_contain(
+                                exercise.get("must_contain")
+                            )
                             return (path, answer, must_contain)
                         case {"path": str(path), "answer_path": str(answer_path)}:
-                            must_contain = process_must_contain(exercise.get("must_contain"))
+                            must_contain = process_must_contain(
+                                exercise.get("must_contain")
+                            )
                             with open(answer_path, "r") as file:
                                 return (path, "\n".join(file.readlines()), must_contain)
                         case _:
@@ -72,6 +76,7 @@ class Config:
         with open(path, "rb") as file:
             self.parse(tomllib.load(file))
 
+
 def process_must_contain(must_contain):
     if must_contain is None:
         return []
@@ -82,7 +87,8 @@ def process_must_contain(must_contain):
             raise ValueError("All elements in 'must_contain' must be strings")
     else:
         raise ValueError("Invalid type for 'must_contain'")
-        
+
+
 def read_args() -> Config:
     """Reads command line arguments. Returns the parsed configuration file."""
 

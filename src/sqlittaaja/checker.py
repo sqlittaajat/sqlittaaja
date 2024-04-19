@@ -55,6 +55,12 @@ def check_exercises(
 
     return student_scores
 
+
 def remove_sql_comments(sql_string):
-    pattern = r'(([\"\'])(?:(?=(\\?))\3.)*?\2)|(--.*?$|\/\*[\s\S]*?\*\/)'
-    return re.sub(pattern, lambda m: m.group(1) if m.group(1) else '', sql_string, flags=re.MULTILINE)
+    pattern = r"(([\"\'])(?:(?=(\\?))\3.)*?\2)|(--.*?$|\/\*[\s\S]*?\*\/)"
+    return re.sub(
+        pattern,
+        lambda m: m.group(1) if m.group(1) else "",
+        sql_string,
+        flags=re.MULTILINE,
+    )
