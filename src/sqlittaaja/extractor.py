@@ -14,10 +14,10 @@ def extract(path: str) -> dict[str, str]:
         }
 
 
-def student_info(name: str) -> (str, str):
-    """Extract student information from file path."""
+def student_info(name: str) -> str:
+    """Extract student information (name) from file path."""
 
     dir = name.split(os.path.sep)[0]
     parts = dir.split("_")
-    # First should be student's name and second some ID or something.
-    return (parts[0], parts[1])
+    # First should be student's name.
+    return parts[0]
