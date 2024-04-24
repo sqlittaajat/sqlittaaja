@@ -1,5 +1,6 @@
 import sqlite3
 from sqlittaaja.extractor import student_info
+from typing import Any, List
 
 
 def init_database(script: str) -> sqlite3.Connection:
@@ -18,6 +19,15 @@ def copy_database(db: sqlite3.Connection) -> sqlite3.Connection:
     return new_db
 
 
+def exec_fetch(db: sqlite3.Connection, script: str) -> List[Any]:
+    """Execute many SQL statements and return results for each one combined."""
+
+    result = []
+    for statement in script.split(";"):
+        result.extend(db.execute(statement).fetchall())
+    return result
+
+
 def check_exercises(
     init_script: str, answer: str, exercises: dict[str, str]
 ) -> dict[str, int]:
@@ -29,8 +39,9 @@ def check_exercises(
     base_db = init_database(init_script)
 
     # Generate information for the correct answer.
-    correct_rows = base_db.execute(answer).fetchall()
-    correct_dump = list(base_db.iterdump())
+    correct_db = copy_database(base_db)
+    correct_rows = exec_fetch(correct_db, answer)
+    correct_dump = list(correct_db.iterdump())
 
     # Go through each student one by one.
     for info in [(student_info(key), exercises[key]) for key in exercises.keys()]:
@@ -42,7 +53,7 @@ def check_exercises(
         # Copy the whole database just in case.
         db = copy_database(base_db)
         try:
-            answer_rows = db.execute(answer).fetchall()
+            answer_rows = exec_fetch(db, answer)
             answer_dump = list(db.iterdump())
             # Compare results between student's answer and the correct one.
             if answer_rows == correct_rows and answer_dump == correct_dump:
