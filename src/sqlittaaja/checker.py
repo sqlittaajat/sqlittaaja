@@ -44,10 +44,9 @@ def check_exercises(
     correct_dump = list(correct_db.iterdump())
 
     # Go through each student one by one.
-    for info in [(student_info(key), exercises[key]) for key in exercises.keys()]:
-        student_name = info[0][0]
-        answer = info[1]
-
+    for student_name, answer in [
+        (student_info(key), exercises[key]) for key in exercises.keys()
+    ]:
         student_scores[student_name] = 0
 
         # Copy the whole database just in case.
