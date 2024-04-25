@@ -77,6 +77,7 @@ def remove_sql_comments(sql_string):
         flags=re.MULTILINE,
     )
 
+
 def remove_extra_spaces(string):
     pattern = r" {2,}|\t+|\n+|\r+"
     return re.sub(pattern, " ", string, flags=re.UNICODE)

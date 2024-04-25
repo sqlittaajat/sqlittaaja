@@ -88,7 +88,7 @@ def process_word_list(value, name: str):
             return value
         case _:
             raise ValueError(f"Invalid type for '{name}'")
-        
+
 
 def read_args() -> Config:
     """Reads command line arguments. Returns the parsed configuration file."""
