@@ -35,10 +35,10 @@ class Config:
 
                 def get_exercise(exercise) -> (str, str, list[str], list[str]):
                     must_contain = process_word_list(
-                        exercise.get("must_contain"), "must_contain"
+                        exercise.get("must_contain", []), "must_contain"
                     )
                     must_not_contain = process_word_list(
-                        exercise.get("must_not_contain"), "must_not_contain"
+                        exercise.get("must_not_contain", []), "must_not_contain"
                     )
                     match exercise:
                         case {"path": str(path), "answer": str(answer)}:
@@ -83,16 +83,12 @@ class Config:
 
 
 def process_word_list(value, name: str):
-    if value is None:
-        return []
-    elif isinstance(value, list):
-        if all(isinstance(item, str) for item in value):
+    match value:
+        case list if all(isinstance(item, str) for item in value):
             return value
-        else:
-            raise ValueError(f"All elements in '{name}' must be strings")
-    else:
-        raise ValueError(f"Invalid type for '{name}'")
-
+        case _:
+            raise ValueError(f"Invalid type for '{name}'")
+        
 
 def read_args() -> Config:
     """Reads command line arguments. Returns the parsed configuration file."""
