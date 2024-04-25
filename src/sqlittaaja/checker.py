@@ -44,10 +44,10 @@ def check_exercises(
 
         student_scores[student_name] = 0
 
-        if not all(word in remove_sql_comments(answer) for word in must_contain):
+        if not all(word.lower() in remove_sql_comments(answer).lower() for word in must_contain):
             continue
 
-        if any(word in remove_sql_comments(answer) for word in must_not_contain):
+        if any(word.lower() in remove_sql_comments(answer).lower() for word in must_not_contain):
             continue
 
         # Copy the whole database just in case.
