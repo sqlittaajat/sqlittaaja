@@ -44,10 +44,12 @@ def check_exercises(
 
         student_scores[student_name] = 0
 
-        if not all(word.lower() in remove_sql_comments(answer).lower() for word in must_contain):
+        procsessed_answer = remove_extra_spaces(remove_sql_comments(answer)).lower()
+
+        if not all(word.lower() in procsessed_answer for word in must_contain):
             continue
 
-        if any(word.lower() in remove_sql_comments(answer).lower() for word in must_not_contain):
+        if any(word.lower() in procsessed_answer for word in must_not_contain):
             continue
 
         # Copy the whole database just in case.
@@ -74,3 +76,7 @@ def remove_sql_comments(sql_string):
         sql_string,
         flags=re.MULTILINE,
     )
+
+def remove_extra_spaces(string):
+    pattern = r" {2,}|\t+|\n+|\r+"
+    return re.sub(pattern, " ", string, flags=re.UNICODE)
