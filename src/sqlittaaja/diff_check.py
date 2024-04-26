@@ -20,8 +20,8 @@ def compute_similarity(
                 ).ratio()
 
                 if similarity_ratio >= treshold_pct:
-                    student1 = student_info(file1)[0]
-                    student2 = student_info(file2)[0]
+                    student1 = student_info(file1)
+                    student2 = student_info(file2)
 
                     # Append a new similarity to the result.
                     result[student1] = result.get(student1, []) + [

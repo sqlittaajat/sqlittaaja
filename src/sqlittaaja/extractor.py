@@ -1,5 +1,4 @@
 from zipfile import ZipFile
-import os
 
 
 def extract(path: str) -> dict[str, str]:
@@ -10,14 +9,14 @@ def extract(path: str) -> dict[str, str]:
             name: zip.read(name).decode()
             for name in
             # Filter out directories.
-            filter(lambda name: not name.endswith(os.path.sep), zip.namelist())
+            filter(lambda name: not name.endswith("/"), zip.namelist())
         }
 
 
-def student_info(name: str) -> (str, str):
-    """Extract student information from file path."""
+def student_info(name: str) -> str:
+    """Extract student information (name) from file path."""
 
-    dir = name.split(os.path.sep)[0]
+    dir = name.split("/")[0]
     parts = dir.split("_")
-    # First should be student's name and second some ID or something.
-    return (parts[0], parts[1])
+    # First should be student's name.
+    return parts[0]
