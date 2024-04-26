@@ -1,4 +1,5 @@
 import sqlite3
+import re
 from sqlittaaja.extractor import student_info
 from typing import Any, List
 
@@ -29,7 +30,11 @@ def exec_fetch(db: sqlite3.Connection, script: str) -> List[Any]:
 
 
 def check_exercises(
-    init_script: str, answer: str, exercises: dict[str, str]
+    init_script: str,
+    answer: str,
+    exercises: dict[str, str],
+    must_contain: list[str],
+    must_not_contain: list[str],
 ) -> dict[str, int]:
     """Check students' exercises."""
 
@@ -49,6 +54,14 @@ def check_exercises(
     ]:
         student_scores[student_name] = 0
 
+        processed_answer = remove_extra_spaces(remove_sql_comments(answer)).lower()
+
+        if not all(word.lower() in processed_answer for word in must_contain):
+            continue
+
+        if any(word.lower() in processed_answer for word in must_not_contain):
+            continue
+
         # Copy the whole database just in case.
         db = copy_database(base_db)
         try:
@@ -61,3 +74,23 @@ def check_exercises(
             print(f"Failed to run {student_name}'s answer")
 
     return student_scores
+
+
+def remove_sql_comments(sql_string):
+    """Removes SQLite comments. If the supposed comment is inside quotation marks, leaves it as is."""
+
+    pattern = r"(([\"\'])(?:(?=(\\?))\3.)*?\2)|(--.*?$|\/\*[\s\S]*?\*\/)"
+    # Group 1 catches all quotation marks so they can be left unchanged
+    return re.sub(
+        pattern,
+        lambda m: m.group(1) if m.group(1) else "",
+        sql_string,
+        flags=re.MULTILINE,
+    )
+
+
+def remove_extra_spaces(string):
+    """Removes extra spaces, tabs, newlines and carriage returns."""
+
+    pattern = r" {2,}|\t+|\n+|\r+"
+    return re.sub(pattern, " ", string, flags=re.UNICODE)

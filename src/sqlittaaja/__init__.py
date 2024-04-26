@@ -10,10 +10,12 @@ def main():
 
     total_scores: dict[str, int] = {}
 
-    for path, answer in config.exercises:
+    for path, answer, must_contain, must_not_contain in config.exercises:
         exercises = extract(path)
 
-        student_scores = check_exercises(config.initialize_script, answer, exercises)
+        student_scores = check_exercises(
+            config.initialize_script, answer, exercises, must_contain, must_not_contain
+        )
         answer_similarities = compute_similarity(config.threshold_pct, exercises)
 
         # Add the score in order to accumulate overall score for each student.

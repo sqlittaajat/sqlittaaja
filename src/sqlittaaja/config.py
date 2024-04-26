@@ -8,7 +8,7 @@ class Config:
     """Application level configuration options."""
 
     initialize_script: str = ""
-    exercises: list[(str, str)] = []
+    exercises: list[(str, str, list[str], list[str])] = []
     threshold_pct: float = 0.9
 
     def parse(self, config: dict[str, Any]):
@@ -33,13 +33,20 @@ class Config:
         match config.get("exercises"):
             case list(exercises_section):
 
-                def get_exercise(exercise) -> (str, str):
+                def get_exercise(exercise) -> (str, str, list[str], list[str]):
+                    must_contain = process_word_list(exercise, "must_contain")
+                    must_not_contain = process_word_list(exercise, "must_not_contain")
                     match exercise:
                         case {"path": str(path), "answer": str(answer)}:
-                            return (path, answer)
+                            return (path, answer, must_contain, must_not_contain)
                         case {"path": str(path), "answer_path": str(answer_path)}:
                             with open(answer_path, "r") as file:
-                                return (path, "\n".join(file.readlines()))
+                                return (
+                                    path,
+                                    "\n".join(file.readlines()),
+                                    must_contain,
+                                    must_not_contain,
+                                )
                         case _:
                             raise ValueError(
                                 "Invalid or missing path/answer values in some exercise"
@@ -69,6 +76,17 @@ class Config:
     def __init__(self, path: str):
         with open(path, "rb") as file:
             self.parse(tomllib.load(file))
+
+
+def process_word_list(value, name: str):
+    """Ensure that the word list contains only strings."""
+
+    value = value.get(name, [])
+    match value:
+        case list if all(isinstance(item, str) for item in value):
+            return value
+        case _:
+            raise ValueError(f"Invalid type for '{name}'")
 
 
 def read_args() -> Config:
