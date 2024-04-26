@@ -78,7 +78,7 @@ def check_exercises(
 
 def remove_sql_comments(sql_string):
     """Removes SQLite comments. If the supposed comment is inside quotation marks, leaves it as is."""
-    
+
     pattern = r"(([\"\'])(?:(?=(\\?))\3.)*?\2)|(--.*?$|\/\*[\s\S]*?\*\/)"
     # Group 1 catches all quotation marks so they can be left unchanged
     return re.sub(
@@ -90,5 +90,7 @@ def remove_sql_comments(sql_string):
 
 
 def remove_extra_spaces(string):
+    """Removes extra spaces, tabs, newlines and carriage returns."""
+    
     pattern = r" {2,}|\t+|\n+|\r+"
     return re.sub(pattern, " ", string, flags=re.UNICODE)
