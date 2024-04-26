@@ -83,6 +83,8 @@ class Config:
 
 
 def process_word_list(value, name: str):
+    """Ensure that the word list contains only strings."""
+    
     match value:
         case list if all(isinstance(item, str) for item in value):
             return value
