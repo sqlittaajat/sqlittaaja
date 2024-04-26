@@ -34,12 +34,8 @@ class Config:
             case list(exercises_section):
 
                 def get_exercise(exercise) -> (str, str, list[str], list[str]):
-                    must_contain = process_word_list(
-                        exercise, "must_contain"
-                    )
-                    must_not_contain = process_word_list(
-                        exercise, "must_not_contain"
-                    )
+                    must_contain = process_word_list(exercise, "must_contain")
+                    must_not_contain = process_word_list(exercise, "must_not_contain")
                     match exercise:
                         case {"path": str(path), "answer": str(answer)}:
                             return (path, answer, must_contain, must_not_contain)
