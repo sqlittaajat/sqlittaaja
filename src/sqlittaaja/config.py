@@ -8,7 +8,7 @@ class Config:
     """Application level configuration options."""
 
     initialize_script: str = ""
-    exercises: list[(str, str, list[str])] = []
+    exercises: list[(str, str, list[str], list[str])] = []
     threshold_pct: float = 0.9
 
     def parse(self, config: dict[str, Any]):
