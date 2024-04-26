@@ -35,10 +35,10 @@ class Config:
 
                 def get_exercise(exercise) -> (str, str, list[str], list[str]):
                     must_contain = process_word_list(
-                        exercise.get("must_contain", []), "must_contain"
+                        exercise, "must_contain"
                     )
                     must_not_contain = process_word_list(
-                        exercise.get("must_not_contain", []), "must_not_contain"
+                        exercise, "must_not_contain"
                     )
                     match exercise:
                         case {"path": str(path), "answer": str(answer)}:
@@ -84,7 +84,8 @@ class Config:
 
 def process_word_list(value, name: str):
     """Ensure that the word list contains only strings."""
-    
+
+    value = value.get(name, [])
     match value:
         case list if all(isinstance(item, str) for item in value):
             return value
