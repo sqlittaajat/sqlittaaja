@@ -1,13 +1,24 @@
-from sqlittaaja.output import print_scores
+from sqlittaaja.output import print_scores, html_scores, indent
 from sqlittaaja.config import read_args
 from sqlittaaja.checker import check_exercises, compute_similarity
 from sqlittaaja.extractor import extract
+import tempfile
 
 
 def main():
     config = read_args()
 
     total_scores: dict[str, int] = {}
+
+    html = """<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SQLittaaja Report</title>
+  </head>
+  <body>
+"""
 
     for path, answer, must_contain, must_not_contain in config.exercises:
         exercises = extract(path)
@@ -28,4 +39,22 @@ def main():
 
     # Print the final scores for each student.
     print("Total scores")
-    print_scores(total_scores, max_score=len(config.exercises))
+    max_score = len(config.exercises)
+    print_scores(total_scores, max_score=max_score)
+    html += indent(html_scores(total_scores, max_score=max_score), width=2)
+    print()
+
+    html += """
+  </body>
+</html>
+"""
+
+    # Write the HTML report to a temporary file and print the filepath.
+    with tempfile.NamedTemporaryFile(
+        mode="w",
+        prefix="sqlittaaja_report_",
+        suffix=".html",
+        delete=False,
+    ) as file:
+        file.write(html)
+        print(f"Report: {file.name}")

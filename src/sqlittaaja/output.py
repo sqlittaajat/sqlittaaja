@@ -115,10 +115,16 @@ def html_table(table: list[list[str]]) -> str:
     """Generate a generic HTML table."""
 
     return (
-        "<table>\n  <thead>\n    <tr>\n"
+        """<table>
+  <thead>
+    <tr>
+"""
         # Generate header.
         + "".join(f"      <th>{title}</th>\n" for title in table[0])
-        + "    </tr>\n  </thead>\n  <tbody>\n"
+        + """    </tr>
+  </thead>
+  <tbody>
+"""
         + "".join(
             (
                 # Generate each row.
@@ -128,5 +134,12 @@ def html_table(table: list[list[str]]) -> str:
             )
             for row in table[1:]
         )
-        + "  </tbody>\n</table>"
+        + """  </tbody>
+</table>"""
     )
+
+
+def indent(text: str, width: int) -> str:
+    """Indent each line of the text."""
+
+    return "\n".join(map(lambda line: "    " + line, text.splitlines()))
