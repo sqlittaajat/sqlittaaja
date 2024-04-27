@@ -1,4 +1,4 @@
-from sqlittaaja.printer import print_scores
+from sqlittaaja.output import print_scores
 from sqlittaaja.config import read_args
 from sqlittaaja.checker import check_exercises, compute_similarity
 from sqlittaaja.extractor import extract
