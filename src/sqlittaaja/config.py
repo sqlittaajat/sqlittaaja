@@ -11,17 +11,9 @@ class Config:
     initialize_script: str = ""
     exercises: list[(str, str, list[str], list[str])] = []
     threshold_pct: float = 0.9
-    open_report: bool
+    open_report: bool = False
 
     def parse(self, config: dict[str, Any]):
-        match config.get("open_report"):
-            case bool(value):
-                self.open_report = value
-            case None:
-                self.open_report = not sys.stdout.isatty()
-            case _:
-                raise ValueError("Invalid type for 'open_report'")
-
         match config.get("answer"):
             case dict(answer_section):
                 match answer_section.get("initialize"):
@@ -118,12 +110,21 @@ def read_args() -> Config:
             raise argparse.ArgumentTypeError(e)
 
     parser.add_argument(
-        "-c",
-        "--config",
+        "config",
         type=load_config,
         default="config.toml",
+        nargs="?",
         help="configuration file for the exercises (in TOML format)",
     )
 
+    parser.add_argument(
+        "-o",
+        "--open-report",
+        action=argparse.BooleanOptionalAction,
+        default=not sys.stdout.isatty(),
+        help="open HTML report in the default web browser",
+    )
+
     args = parser.parse_args()
+    args.config.open_report = args.open_report
     return args.config
