@@ -121,7 +121,7 @@ def read_args() -> Config:
         "-o",
         "--open-report",
         action=argparse.BooleanOptionalAction,
-        default=not sys.stdout.isatty(),
+        default=not sys.stdin.isatty(),
         help="open HTML report in the default web browser",
     )
 
