@@ -142,4 +142,4 @@ def html_table(table: list[list[str]]) -> str:
 def indent(text: str, width: int) -> str:
     """Indent each line of the text."""
 
-    return "\n".join(map(lambda line: "    " + line, text.splitlines()))
+    return "\n".join(map(lambda line: " " * width + line, text.splitlines()))
