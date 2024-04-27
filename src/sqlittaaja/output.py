@@ -1,9 +1,9 @@
-def print_scores(
+def gen_scores_table(
     student_scores: dict[str, int],
     answer_similarities: dict[str, list[tuple[str, float]]] = {},
     max_score=0,
-):
-    """Prints student scores and similarity ratios"""
+) -> list[list[str]]:
+    """Generate table list matrix out of student scores."""
 
     scores_list = [
         [
@@ -13,25 +13,36 @@ def print_scores(
         for student_name, score in student_scores.items()
     ]
 
-    if answer_similarities:
-        print_table(
-            [["Student Name", "Score", "Similarity"]]
-            + [
-                [
-                    student_score[0],
-                    student_score[1],
-                    # Show similarity for each student.
-                    "\n".join(
-                        f"{similarity[0]} ({str(round(similarity[1] * 100, 2))}%)"
-                        for similarity in answer_similarities.get(student_score[0], [])
-                    ),
-                ]
-                for student_score in scores_list
-            ],
-            separators=True,
-        )
-    else:
-        print_table([["Student Name", "Score"]] + scores_list)
+    return (
+        [["Student Name", "Score", "Similarity"]]
+        + [
+            [
+                student_score[0],
+                student_score[1],
+                # Show similarity for each student.
+                "\n".join(
+                    f"{similarity[0]} ({str(round(similarity[1] * 100, 2))}%)"
+                    for similarity in answer_similarities.get(student_score[0], [])
+                ),
+            ]
+            for student_score in scores_list
+        ]
+        if answer_similarities
+        else [["Student Name", "Score"]] + scores_list
+    )
+
+
+def print_scores(
+    student_scores: dict[str, int],
+    answer_similarities: dict[str, list[tuple[str, float]]] = {},
+    max_score=0,
+):
+    """Prints student scores and similarity ratios"""
+
+    print_table(
+        gen_scores_table(student_scores, answer_similarities, max_score),
+        separators=bool(answer_similarities),
+    )
 
 
 def print_table(table: list[list[str]], separators: bool = False):
@@ -88,3 +99,47 @@ def print_table(table: list[list[str]], separators: bool = False):
                 "├─" + "─┼─".join(["─" * max_len for max_len in max_column_lens]) + "─┤"
             )
     print("└─" + "─┴─".join(["─" * max_len for max_len in max_column_lens]) + "─┘")
+
+
+def html_scores(
+    student_scores: dict[str, int],
+    answer_similarities: dict[str, list[tuple[str, float]]] = {},
+    max_score=0,
+) -> str:
+    """Generate student scores and similarity ratios in HTML."""
+
+    return html_table(gen_scores_table(student_scores, answer_similarities, max_score))
+
+
+def html_table(table: list[list[str]]) -> str:
+    """Generate a generic HTML table."""
+
+    return (
+        """<table>
+  <thead>
+    <tr>
+"""
+        # Generate header.
+        + "".join(f"      <th>{title}</th>\n" for title in table[0])
+        + """    </tr>
+  </thead>
+  <tbody>
+"""
+        + "".join(
+            (
+                # Generate each row.
+                "    <tr>\n"
+                + "".join(f"      <td>{title}</td>\n" for title in row)
+                + "    </tr>\n"
+            )
+            for row in table[1:]
+        )
+        + """  </tbody>
+</table>"""
+    )
+
+
+def indent(text: str, width: int) -> str:
+    """Indent each line of the text."""
+
+    return "\n".join(map(lambda line: " " * width + line, text.splitlines()))
