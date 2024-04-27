@@ -1,6 +1,7 @@
 import argparse
 import tomllib
 import os
+import sys
 from typing import Any
 
 
@@ -10,12 +11,16 @@ class Config:
     initialize_script: str = ""
     exercises: list[(str, str, list[str], list[str])] = []
     threshold_pct: float = 0.9
-    open_report: bool = False
+    open_report: bool
 
     def parse(self, config: dict[str, Any]):
         match config.get("open_report"):
             case bool(value):
                 self.open_report = value
+            case None:
+                self.open_report = not sys.stdout.isatty()
+            case _:
+                raise ValueError("Invalid type for 'open_report'")
 
         match config.get("answer"):
             case dict(answer_section):
