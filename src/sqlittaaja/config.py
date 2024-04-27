@@ -10,8 +10,13 @@ class Config:
     initialize_script: str = ""
     exercises: list[(str, str, list[str], list[str])] = []
     threshold_pct: float = 0.9
+    open_report: bool = False
 
     def parse(self, config: dict[str, Any]):
+        match config.get("open_report"):
+            case bool(value):
+                self.open_report = value
+
         match config.get("answer"):
             case dict(answer_section):
                 match answer_section.get("initialize"):

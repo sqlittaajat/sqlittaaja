@@ -3,6 +3,7 @@ from sqlittaaja.config import read_args
 from sqlittaaja.checker import check_exercises, compute_similarity
 from sqlittaaja.extractor import extract
 import tempfile
+import webbrowser
 
 
 def main():
@@ -63,3 +64,6 @@ def main():
     ) as file:
         file.write(html)
         print(f"Report: {file.name}")
+
+        if config.open_report:
+            webbrowser.open(file.name)
