@@ -2,6 +2,7 @@ from sqlittaaja.output import print_scores, html_scores, indent
 from sqlittaaja.config import read_args
 from sqlittaaja.checker import check_exercises, compute_similarity
 from sqlittaaja.extractor import extract
+from sqlittaaja.html_style import report_style
 import tempfile
 import webbrowser
 
@@ -11,12 +12,13 @@ def main():
 
     total_scores: dict[str, int] = {}
 
-    html = """<!doctype html>
+    html = f"""<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>SQLittaaja Report</title>
+    <style>{report_style}</style>
   </head>
   <body>
 """
@@ -60,6 +62,7 @@ def main():
         mode="w",
         prefix="sqlittaaja_report_",
         suffix=".html",
+        encoding="utf-8",
         delete=False,
     ) as file:
         file.write(html)
