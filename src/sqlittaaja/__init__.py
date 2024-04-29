@@ -4,6 +4,8 @@ from sqlittaaja.checker import check_exercises, compute_similarity
 from sqlittaaja.extractor import extract
 import tempfile
 import webbrowser
+import sys
+import os
 
 
 def main():
@@ -11,12 +13,13 @@ def main():
 
     total_scores: dict[str, int] = {}
 
-    html = """<!doctype html>
+    html = f"""<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>SQLittaaja Report</title>
+    <style>{report_style()}</style>
   </head>
   <body>
 """
@@ -60,6 +63,7 @@ def main():
         mode="w",
         prefix="sqlittaaja_report_",
         suffix=".html",
+        encoding="utf-8",
         delete=False,
     ) as file:
         file.write(html)
@@ -67,3 +71,15 @@ def main():
 
         if config.open_report:
             webbrowser.open(file.name)
+
+
+def report_style() -> str:
+    """Reads style.css file and returns content."""
+    try:
+        base_path = getattr(sys, "_MEIPASS", os.path.dirname(os.path.abspath(__file__)))
+        style_css_path = os.path.join(base_path, "style.css")
+        print(style_css_path)
+        with open(style_css_path, encoding="utf-8") as style_file:
+            return style_file.read()
+    except FileNotFoundError:
+        return ""

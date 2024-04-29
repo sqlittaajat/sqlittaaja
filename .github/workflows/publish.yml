@@ -29,7 +29,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install pyinstaller
       - name: Build with pyinstaller for ${{ matrix.os }}
-        run: pyinstaller -s -F -c -n sqlittaaja src/sqlittaaja/__main__.py
+        run: pyinstaller --add-data "src/sqlittaaja/style.css:." -s -F -c -n sqlittaaja src/sqlittaaja/__main__.py
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
