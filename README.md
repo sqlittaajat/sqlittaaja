@@ -2,11 +2,14 @@
 
 [![GitHub Release](https://img.shields.io/github/v/release/sqlittaajat/sqlittaaja?logo=github)](https://github.com/sqlittaajat/sqlittaaja/releases)
 
-SQLittaaja is a tool that checks and grades SQLite exercises and flags possible cases of plagiarism. It is designed for teachers that use Moodle as a learning platform in their courses.
+SQLittaaja is a tool that checks and grades SQLite exercises and flags possible
+cases of plagiarism. It is designed for teachers that use Moodle as a learning
+platform in their courses.
 
 ## Installation
 
-Download the latest version of SQLittaaja from [releases tab](https://github.com/sqlittaajat/sqlittaaja/releases)
+Download the latest version of SQLittaaja from
+[releases tab](https://github.com/sqlittaajat/sqlittaaja/releases)
 
 ## Running SQLittaaja
 
@@ -15,13 +18,16 @@ To run SQLittaaja you will need:
 - [a configuration file](https://github.com/sqlittaajat/sqlittaaja/wiki/Configuration-file) and
 - [a zip file containing exercise submissions](https://github.com/sqlittaajat/sqlittaaja/wiki/How-to-run-SQLittaaja#student-submissions-zip-file-and-its-structure)
 
-Run SQLittaaja from command line without arguments when your 'config.toml' file is in the directory from which you run it, or specify a different configuration file with --config / -c
+Run SQLittaaja from command line without arguments when your 'config.toml' file
+is in the directory from which you run it, or specify a different configuration
+file with like so:
 
 ```
 sqlittaaja your_config.toml
 ```
 
-Refer to SQLittaaja Wiki for further instructions: [How to run SQLittaaja](https://github.com/sqlittaajat/sqlittaaja/wiki/How-to-run-SQLittaaja)
+Refer to SQLittaaja Wiki for further instructions:
+[How to run SQLittaaja](https://github.com/sqlittaajat/sqlittaaja/wiki/How-to-run-SQLittaaja)
 
 ## Technologies
 
