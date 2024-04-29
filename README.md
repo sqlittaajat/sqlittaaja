@@ -20,7 +20,7 @@ To run SQLittaaja you will need:
 
 Run SQLittaaja from command line without arguments when your 'config.toml' file
 is in the directory from which you run it, or specify a different configuration
-file with like so:
+file like so:
 
 ```
 sqlittaaja your_config.toml
