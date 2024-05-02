@@ -40,3 +40,21 @@ th {
 tbody tr:nth-child(even) {
   background-color: #f0f0f0;
 }
+
+/* Styles for difflib.HtmlDiff().make_table() output from diff_html.py */
+table.diff {
+  width: 1080px;
+  table-layout:fixed;
+  margin-bottom: 0;
+  box-shadow: none;
+  border-radius: 0;
+}
+table.diff td {color: #000000;}
+td.diff_header {text-align:right}
+th.diff_next {background-color:#7dbaff}
+
+.diff_add {background-color:#aaffaa}
+.diff_chg {background-color:#ffff77}
+.diff_sub {background-color:#ffaaaa}
+colgroup {width: 2%}
+colgroup:nth-child(3n) {width: 48%}
