@@ -2,6 +2,7 @@ from sqlittaaja.output import print_scores, html_scores, indent
 from sqlittaaja.config import read_args
 from sqlittaaja.checker import check_exercises, compute_similarity
 from sqlittaaja.extractor import extract
+from sqlittaaja.diff_html import generate_html_table
 import tempfile
 import webbrowser
 import sys
@@ -42,6 +43,10 @@ def main():
         html += f"""    <details>
       <summary>Scores for '{path}'</summary>
 {indent(html_scores(student_scores, answer_similarities), width=6)}
+    <details>
+        <summary>Differ</summary>
+{generate_html_table(answer_similarities, exercises)}
+    </details>
     </details>
 """
         print()
