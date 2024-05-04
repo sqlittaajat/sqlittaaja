@@ -165,7 +165,7 @@ def html_diff_table(
             content2 = extracted[
                 [key for key in extracted.keys() if key.startswith(student2_name)][0]
             ]
-            tables += difflib.HtmlDiff(wrapcolumn=50).make_table(
+            tables += difflib.HtmlDiff(tabsize=2, wrapcolumn=50).make_table(
                 content1.splitlines(),
                 content2.splitlines(),
                 fromdesc=f"{student1_name}: {str(round(similarity * 100, 2))}%",
