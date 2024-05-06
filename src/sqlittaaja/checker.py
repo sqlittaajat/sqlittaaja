@@ -54,6 +54,7 @@ def check_exercises(
         (student_info(key), exercises[key]) for key in exercises.keys()
     ]:
         student_scores[student_name] = 0
+        answer = remove_dot_commands(answer)
 
         processed_answer = remove_extra_spaces(remove_sql_comments(answer)).lower()
 
@@ -95,6 +96,12 @@ def remove_extra_spaces(string):
 
     pattern = r" {2,}|\t+|\n+|\r+"
     return re.sub(pattern, " ", string, flags=re.UNICODE)
+
+
+def remove_dot_commands(string):
+    lines = string.split("\n")
+    kept_lines = [line for line in lines if not line.startswith('.')]
+    return "\n".join(kept_lines)
 
 
 def compute_similarity(
