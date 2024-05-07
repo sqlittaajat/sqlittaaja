@@ -100,10 +100,8 @@ def remove_extra_spaces(string):
 
 def remove_dot_commands(string):
     """Removes lines starting with . [dot] from a string."""
-    
-    lines = string.split("\n")
-    kept_lines = [line for line in lines if not line.startswith('.')]
-    return "\n".join(kept_lines)
+
+    return "\n".join(filter(lambda line: not line.startswith("."), string.split("\n")))
 
 
 def compute_similarity(
