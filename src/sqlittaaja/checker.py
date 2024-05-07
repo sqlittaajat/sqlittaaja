@@ -100,8 +100,9 @@ def remove_extra_spaces(string):
 
 def remove_dot_commands(string):
     """Removes lines starting with . [dot] from a string."""
+    
     lines = string.split("\n")
-    kept_lines = [line for line in lines if not line.startswith(".")]
+    kept_lines = [line for line in lines if not line.startswith('.')]
     return "\n".join(kept_lines)
 
 
