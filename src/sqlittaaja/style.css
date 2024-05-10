@@ -6,12 +6,17 @@ body {
 }
 
 details {
-  margin: 10px 0 20px;
+  margin: 20px 0;
+  padding: 0 10px;
+  border-left: 2px solid #666;
+  border-top-left-radius: 10px;
+  border-bottom: 1px solid #666;
 }
 
 summary {
   cursor: pointer;
   font-weight: bold;
+  margin: 10px 0;
 }
 
 table {
@@ -54,17 +59,21 @@ table.diff:first-of-type {
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
 }
+
 table.diff:last-of-type {
   border-collapse: collapse;
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
 }
+
 table.diff td {
   color: #000000;
 }
+
 td.diff_header {
   text-align: right;
 }
+
 th.diff_next {
   background-color: #7dbaff;
 }
@@ -72,15 +81,19 @@ th.diff_next {
 .diff_add {
   background-color: #aaffaa;
 }
+
 .diff_chg {
   background-color: #ffff77;
 }
+
 .diff_sub {
   background-color: #ffaaaa;
 }
+
 colgroup {
   width: 2%;
 }
+
 colgroup:nth-child(3n) {
   width: 48%;
 }

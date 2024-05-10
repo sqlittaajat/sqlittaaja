@@ -1,4 +1,6 @@
 import difflib
+import os
+import sys
 
 
 def gen_scores_table(
@@ -46,6 +48,7 @@ def print_scores(
         gen_scores_table(student_scores, answer_similarities, max_score),
         separators=bool(answer_similarities),
     )
+    print(f"Total rows: {len(student_scores)}")
 
 
 def print_table(table: list[list[str]], separators: bool = False):
@@ -111,7 +114,10 @@ def html_scores(
 ) -> str:
     """Generate student scores and similarity ratios in HTML."""
 
-    return html_table(gen_scores_table(student_scores, answer_similarities, max_score))
+    return f"{
+        html_table(gen_scores_table(student_scores,
+                   answer_similarities, max_score))
+    }\n<p>Total rows: {len(student_scores)}</p>"
 
 
 def html_table(table: list[list[str]]) -> str:
@@ -123,7 +129,14 @@ def html_table(table: list[list[str]]) -> str:
     <tr>
 """
         # Generate header.
-        + "".join(f"      <th>{title}</th>\n" for title in table[0])
+        + "".join(
+            (
+                f"      <th>\n{indent(title, width=8)}\n      </th>\n"
+                if title
+                else "      <th></th>\n"
+            )
+            for title in table[0]
+        )
         + """    </tr>
   </thead>
   <tbody>
@@ -132,7 +145,14 @@ def html_table(table: list[list[str]]) -> str:
             (
                 # Generate each row.
                 "    <tr>\n"
-                + "".join(f"      <td>{title}</td>\n" for title in row)
+                + "".join(
+                    (
+                        f"      <td>\n{indent(text, width=8)}\n      </td>\n"
+                        if text
+                        else "      <td></td>\n"
+                    )
+                    for text in row
+                )
                 + "    </tr>\n"
             )
             for row in table[1:]
@@ -165,10 +185,28 @@ def html_diff_table(
             content2 = extracted[
                 [key for key in extracted.keys() if key.startswith(student2_name)][0]
             ]
-            tables += difflib.HtmlDiff(tabsize=2, wrapcolumn=50).make_table(
-                content1.splitlines(),
-                content2.splitlines(),
-                fromdesc=f"{student1_name}: {str(round(similarity * 100, 2))}%",
-                todesc=f"{student2_name}: {str(round(similarity * 100, 2))}%",
+            tables += (
+                difflib.HtmlDiff(tabsize=2, wrapcolumn=50).make_table(
+                    content1.splitlines(),
+                    content2.splitlines(),
+                    fromdesc=f"{student1_name}: {
+                        str(round(similarity * 100, 2))}%",
+                    todesc=f"{student2_name}: {
+                        str(round(similarity * 100, 2))}%",
+                )
+                # Replace 4 spaces with 2 spaces for indentation.
+                .replace("    ", "  ")
             )
     return tables
+
+
+def report_style() -> str:
+    """Reads style.css file and returns content."""
+
+    try:
+        base_path = getattr(sys, "_MEIPASS", os.path.dirname(os.path.abspath(__file__)))
+        style_css_path = os.path.join(base_path, "style.css")
+        with open(style_css_path, encoding="utf-8") as style_file:
+            return style_file.read()
+    except FileNotFoundError:
+        return ""
