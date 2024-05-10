@@ -48,6 +48,7 @@ def print_scores(
         gen_scores_table(student_scores, answer_similarities, max_score),
         separators=bool(answer_similarities),
     )
+    print(f"Total rows: {len(student_scores)}")
 
 
 def print_table(table: list[list[str]], separators: bool = False):
@@ -113,7 +114,10 @@ def html_scores(
 ) -> str:
     """Generate student scores and similarity ratios in HTML."""
 
-    return html_table(gen_scores_table(student_scores, answer_similarities, max_score))
+    return f"{
+        html_table(gen_scores_table(student_scores,
+                   answer_similarities, max_score))
+    }\n<p>Total rows: {len(student_scores)}</p>"
 
 
 def html_table(table: list[list[str]]) -> str:
@@ -202,7 +206,6 @@ def report_style() -> str:
     try:
         base_path = getattr(sys, "_MEIPASS", os.path.dirname(os.path.abspath(__file__)))
         style_css_path = os.path.join(base_path, "style.css")
-        print(style_css_path)
         with open(style_css_path, encoding="utf-8") as style_file:
             return style_file.read()
     except FileNotFoundError:
