@@ -10,6 +10,13 @@ platform in their courses.
 
 Download the latest version of SQLittaaja from
 [releases tab](https://github.com/sqlittaajat/sqlittaaja/releases)
+or alternatively if that is not possible, using this command:
+
+```
+python –m venv venv
+venv\Scripts\activate
+pip install git+https://github.com/sqlittaajat/sqlittaaja.git
+```
 
 ## Running SQLittaaja
 
